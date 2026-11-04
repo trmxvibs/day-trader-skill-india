@@ -5,6 +5,12 @@
 [![Market: NSE India](https://img.shields.io/badge/market-NSE%20India-orange.svg)](#)
 [![Tests: 268 passing](https://img.shields.io/badge/tests-268%20passing-brightgreen.svg)](#the-tools)
 [![Zero setup](https://img.shields.io/badge/data-Yahoo%20%E2%80%A2%20Dhan%20%E2%80%A2%20offline-lightgrey.svg)](#data-warning)
+[![Zero dependencies](https://img.shields.io/badge/dependencies-standard%20library%20only-success.svg)](#the-tools)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D6.svg)](#install)
+[![GitHub stars](https://img.shields.io/github/stars/trmxvibs/day-trader-skill-india?style=social)](https://github.com/trmxvibs/day-trader-skill-india/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/trmxvibs/day-trader-skill-india.svg)](https://github.com/trmxvibs/day-trader-skill-india/commits/master)
+[![Open issues](https://img.shields.io/github/issues/trmxvibs/day-trader-skill-india.svg)](https://github.com/trmxvibs/day-trader-skill-india/issues)
+[![Repo size](https://img.shields.io/github/repo-size/trmxvibs/day-trader-skill-india.svg)](#files)
 
 11 Claude Code skills (a plugin) for **NSE (India) day-trade research**: scan the Nifty 100 for
 opening-range breakouts, track the news on what you're watching, time every entry and exit in IST,
@@ -29,6 +35,13 @@ market carries real risk, so plan and invest only after your own careful thought
 > not ORB (stocks or NIFTY futures), not the 540 candlestick + indicator rules tested. These tools
 > are for learning and testing, not a guarantee of making money.
 
+**Why this exists.** The original pack is built for US equities; nothing in it understands IST
+sessions, NSE tick sizes, rupees, or Indian brokers' costs, so running it on a Nifty stock gives
+wrong numbers quietly. This fork keeps the original's design, plain standard-library Python, free
+public data, a human approving every order, paper trading by default, and rebuilds every number
+that market, money, or timezone touches, so the same nine-skill pipeline works correctly on NSE
+cash equity instead of US equity.
+
 ## Contents
 
 - [Install](#install)
@@ -39,6 +52,8 @@ market carries real risk, so plan and invest only after your own careful thought
 - [Data warning](#data-warning)
 - [Fine print](#fine-print)
 - [Files](#files)
+- [Acknowledgments](#acknowledgments)
+- [About the author](#about-the-author)
 
 ## Install
 
@@ -209,6 +224,14 @@ from free, unofficial public endpoints and can be late or wrong.
 **Taxes, margin rules, and your broker's own terms are outside this pack.** Day-trading profit is
 typically short-term in India too; talk to a tax professional before you trade, not after.
 
+**NSE circuit limits and halts can stop you from exiting at all.** A stock that hits its daily
+price band or is halted can leave a stop or target unfilled; the flat-by time in `trader-exit` is
+a plan, not a guarantee the exchange will let the order through.
+
+**Algo-trading rules are evolving in India.** SEBI has been tightening oversight of
+algorithmic and API-based order flow; this pack never sends an order to a broker on its own, but
+check your broker's and SEBI's current rules before connecting anything here to a live account.
+
 **This pack is provided as-is: whoever built or modified it takes no responsibility for any loss
 from using it. The stock market carries real risk, so plan and invest only after your own careful
 thought.**
@@ -236,3 +259,29 @@ thought.**
 
 MIT license: original copyright (c) 2026 Jake Schincariol; the India-version changes are under the
 same license.
+
+## Acknowledgments
+
+- [Jake Schincariol](https://github.com/Jakeschincariol) for the original
+  [day-trader-skill](https://github.com/Jakeschincariol/day-trader-skill), MIT licensed, which this
+  fork's structure, skills, and pipeline are built on.
+- NSE's own index and holiday files, Google News (India), ET Markets, Zerodha Pulse, Livemint, and
+  NSE's announcement feed, for the free public data this pack reads.
+- Dhan, for the Data API that every skill prefers over the automatic Yahoo fallback.
+
+## About the author
+
+Adapted and maintained by **Lokesh Kumar** ([@trmxvibs](https://github.com/trmxvibs)), a security
+researcher and bug-bounty hunter who builds open-source tools on the side.
+
+A few other projects:
+
+- [NetSentry-Framework](https://github.com/trmxvibs/NetSentry-Framework): a bug-bounty recon
+  framework.
+- [OpenOperator](https://github.com/trmxvibs/OpenOperator): a Windows-first voice and text desktop
+  automation agent.
+- [termux-commands](https://github.com/trmxvibs/termux-commands): an A-Z Termux and Linux command
+  reference.
+
+Issues and pull requests are welcome; this is a side project kept up between other work, so replies
+may take a while.
