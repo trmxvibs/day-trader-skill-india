@@ -1,0 +1,11 @@
+{
+  "source": "EXAMPLE ONLY: five Nifty 100 symbols at equal weights to show the file format. Not a recommendation and not anyone's real portfolio.",
+  "as_of": "2026-11-01",
+  "weights": [
+    {"ticker": "RELIANCE", "name": "Reliance Industries Ltd.", "weight": 20.0},
+    {"ticker": "HDFCBANK", "name": "HDFC Bank Ltd.", "weight": 20.0},
+    {"ticker": "TCS", "name": "Tata Consultancy Services Ltd.", "weight": 20.0},
+    {"ticker": "M&M", "name": "Mahindra & Mahindra Ltd.", "weight": 20.0},
+    {"ticker": "ITC", "name": "ITC Ltd.", "weight": 20.0}
+  ]
+}

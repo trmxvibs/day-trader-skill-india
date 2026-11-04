@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "day-trader-skill-india",
+  "description": "The Day Trader skill pack adapted for NSE India: paper and analysis only",
+  "owner": {
+    "name": "Jake Schincariol (NSE India adaptation: Lokesh Kumar)",
+    "url": "https://github.com/trmxvibs"
+  },
+  "plugins": [
+    {
+      "name": "day-trader-skill-india",
+      "description": "Eleven skills, NSE India version: a Nifty 100 chart scanner, a news monitor (Google News), an entry timer, an exit planner, a time machine, a risk manager, a budget manager in rupees, a paper journal (no broker connection), price alerts in IST; the US-only earnings analyst and Pelosi tracker are marked not applicable.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/trmxvibs/day-trader-skill-india"
+    }
+  ]
+}

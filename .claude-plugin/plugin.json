@@ -1,0 +1,37 @@
+{
+  "name": "day-trader-skill-india",
+  "description": "11 Claude skills adapted for NSE India (paper and analysis only): scan Nifty 100 charts, track news, time every entry and exit in IST, size in rupees with Dhan's costs, and replay outcomes before you risk a rupee.",
+  "version": "2.0.0-nse.1",
+  "author": {
+    "name": "Jake Schincariol (NSE India adaptation: Lokesh Kumar)",
+    "url": "https://github.com/trmxvibs"
+  },
+  "homepage": "https://github.com/trmxvibs/day-trader-skill-india",
+  "repository": "https://github.com/trmxvibs/day-trader-skill-india",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-skills",
+    "claude-plugin",
+    "day-trading",
+    "nse",
+    "nse-india",
+    "india",
+    "stock-market",
+    "stock-market-india",
+    "algo-trading",
+    "trading-bot",
+    "intraday-trading",
+    "nifty",
+    "nifty-100",
+    "dhan-api",
+    "yahoo-finance",
+    "backtesting",
+    "opening-range-breakout",
+    "paper-trading",
+    "monte-carlo-simulation",
+    "risk-management"
+  ],
+  "skills": "./",
+  "_credit": "India (NSE) adaptation of day-trader-skill by Jake Schincariol, MIT licensed: https://github.com/Jakeschincariol/day-trader-skill"
+}

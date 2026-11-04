@@ -1,0 +1,21 @@
+{
+  "_comment": "Round-trip cost model for NSE equity intraday (MIS) at Dhan. Rates as fractions of traded value. Checked 2026-11-01 against the source pages below; re-check before relying on them, rates change.",
+  "date_checked": "2026-11-01",
+  "broker": "Dhan",
+  "segment": "NSE equity intraday",
+  "brokerage_per_order_max_inr": 20.0,
+  "brokerage_per_order_pct": 0.0003,
+  "stt_sell": 0.00025,
+  "exchange_txn": 0.000030699,
+  "ipft": 0.000000001,
+  "sebi_fee": 0.000001,
+  "stamp_buy": 0.00003,
+  "gst": 0.18,
+  "gst_on": ["brokerage", "exchange_txn", "sebi_fee", "ipft"],
+  "slippage_per_side": 0.0003,
+  "sources": {
+    "dhan_pricing": "https://dhan.co/pricing/ (Equity Intraday: Rs 20 or 0.03% per executed order, whichever is lower; STT 0.025% on sell; NSE transaction 0.0030699%; SEBI 0.0001%; stamp 0.003% on buy; IPFT 0.0000001%; GST 18% on brokerage + transaction + SEBI + IPFT)",
+    "nse_transaction_charges": "https://nsearchives.nseindia.com/content/circulars/FA73061.pdf (NSE/FA/73061, 2026-02-27: cash market Rs 306.99 per crore, 0.0030699%)",
+    "slippage": "assumption from the brief: 0.03% of price per side, not a measured figure"
+  }
+}

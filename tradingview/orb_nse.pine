@@ -1,0 +1,91 @@
+//@version=5
+// Original: Jake Schincariol (MIT License) - https://github.com/Jakeschincariol/day-trader-skill
+// Modified by: Lokesh Kumar - https://github.com/trmxvibs
+
+// Opening-range breakout on NSE, 5-minute chart. PAPER RESEARCH ONLY: a TradingView strategy
+// never sends orders to a broker; do not connect it to alerts or auto-trading. Not advice.
+// India version of day-trader-skill (MIT, Jake Schincariol). Same rule as india/backtest/backtest.py:
+//   - opening range = the first 15 minutes, 09:15-09:30 IST
+//   - long: the first 5-minute bar that CLOSES above the range high, that close between 09:30 and 14:30 IST,
+//     one trade a day, entry at that close
+//   - stop at the range midpoint rounded down to the tick, target 1R rounded down; a stop closer than
+//     max(0.05% of price, 1 tick) means no trade that day
+//   - out at 15:00 IST (the close of the 14:55 bar) if neither was hit
+// Costs (Settings > Properties > Commission): 0.06% per order =
+//   about 0.03% NSE index-futures charges averaged over buy and sell (Dhan Rs 20 per order, STT 0.05% on the
+//   sell from 1 Apr 2026, NSE 0.0018299% (circular FA73061), SEBI 0.0001%, stamp 0.002% on the buy, GST 18%)
+//   + 0.03% slippage per side (the project's default assumption). Lower it to see a less pessimistic case.
+// TradingView's emulator does not know the order inside one bar: when a bar touches both stop and target it
+// guesses from the bar's shape. The Python backtest always books the stop in that case.
+strategy("ORB 15m NSE - paper research", shorttitle="ORB15 NSE", overlay=true, initial_capital=2000000, currency=currency.INR, default_qty_type=strategy.fixed, default_qty_value=65, commission_type=strategy.commission.percent, commission_value=0.06, slippage=0, pyramiding=0, process_orders_on_close=true)
+
+qty        = input.int(65, "Quantity (NIFTY lot = 65 from Jan 2026)", minval=1)
+orMin      = input.int(15, "Opening range (minutes)", options=[15, 30])
+entryFrom  = input.int(930, "No entries before (HHMM, IST)")
+entryUntil = input.int(1430, "No entries after (HHMM, IST)")
+flatBy     = input.int(1500, "Flat by (HHMM, IST)")
+targetR    = input.float(1.0, "Target (R)", minval=0.5, step=0.5)
+stopRule   = input.string("OR midpoint", "Stop", options=["OR midpoint", "OR low"])
+useShort   = input.bool(false, "Also take the short side (research variant)")
+
+tz = "Asia/Kolkata"
+toMin(v) => math.floor(v / 100) * 60 + v % 100
+floorTick(x) => math.floor(x / syminfo.mintick + 1e-6) * syminfo.mintick
+ceilTick(x) => math.ceil(x / syminfo.mintick - 1e-6) * syminfo.mintick
+
+openMin  = 9 * 60 + 15
+fromMin  = toMin(entryFrom)
+untilMin = toMin(entryUntil)
+flatMin  = toMin(flatBy)
+barOpen  = hour(time, tz) * 60 + minute(time, tz)
+barClose = barOpen + timeframe.in_seconds() / 60
+newDay   = ta.change(dayofmonth(time, tz)) != 0
+
+var float orH = na
+var float orL = na
+var bool tradedToday = false
+var float stopPx = na
+var float tgtPx = na
+
+if newDay
+    orH := na
+    orL := na
+    tradedToday := false
+
+if barOpen >= openMin and barOpen < openMin + orMin
+    orH := na(orH) ? high : math.max(orH, high)
+    orL := na(orL) ? low : math.min(orL, low)
+
+rangeDone = barOpen >= openMin + orMin and not na(orH)
+inWindow  = barClose >= fromMin and barClose <= untilMin
+ready     = rangeDone and inWindow and not tradedToday and strategy.position_size == 0 and timeframe.period == "5"
+
+if ready and close > orH
+    s = stopRule == "OR midpoint" ? floorTick((orH + orL) / 2) : floorTick(orL)
+    r = close - s
+    if r >= math.max(close * 0.0005, syminfo.mintick)
+        stopPx := s
+        tgtPx := floorTick(close + targetR * r)
+        strategy.entry("Long", strategy.long, qty)
+        strategy.exit("Long exit", "Long", stop=stopPx, limit=tgtPx)
+    tradedToday := true
+else if ready and useShort and close < orL
+    s = stopRule == "OR midpoint" ? ceilTick((orH + orL) / 2) : ceilTick(orH)
+    r = s - close
+    if r >= math.max(close * 0.0005, syminfo.mintick)
+        stopPx := s
+        tgtPx := ceilTick(close - targetR * r)
+        strategy.entry("Short", strategy.short, qty)
+        strategy.exit("Short exit", "Short", stop=stopPx, limit=tgtPx)
+    tradedToday := true
+
+if strategy.position_size != 0 and barClose >= flatMin
+    strategy.close_all(comment="flat by")
+
+plot(orH, "OR high", color=color.new(color.green, 0), style=plot.style_linebr)
+plot(orL, "OR low", color=color.new(color.red, 0), style=plot.style_linebr)
+plot(strategy.position_size != 0 ? stopPx : na, "Stop", color=color.new(color.orange, 0), style=plot.style_linebr)
+plot(strategy.position_size != 0 ? tgtPx : na, "Target", color=color.new(color.blue, 0), style=plot.style_linebr)
+
+if barstate.islast and timeframe.period != "5"
+    label.new(bar_index, high, "ORB15 NSE: use the 5-minute chart", color=color.yellow, textcolor=color.black)
